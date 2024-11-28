@@ -2,7 +2,6 @@ package hn.unah.proyecto.dtos;
 
 import java.time.LocalDate;
 
-import hn.unah.proyecto.modelos.Prestamos;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
