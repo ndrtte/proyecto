@@ -27,5 +27,5 @@ public class TablaAmortizacionDTO {
     
     private LocalDate fechaVencimiento;
 
-    private Prestamos prestamo;
+    private PrestamosDTO prestamo;
 }

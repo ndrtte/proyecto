@@ -2,8 +2,6 @@ package hn.unah.proyecto.dtos;
 
 import java.util.List;
 
-import hn.unah.proyecto.modelos.Cliente;
-import hn.unah.proyecto.modelos.TablaAmortizacion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +26,7 @@ public class PrestamosDTO {
 
     private char tipoPrestamo;
 
-    private List<Cliente> listaCliente;
+    private List<ClienteDTO> listaCliente;
 
-    private List<TablaAmortizacion> listaAmortizacion;
+    private List<TablaAmortizacionDTO> listaAmortizacion;
 }
