@@ -10,15 +10,21 @@ import org.springframework.stereotype.Service;
 
 import hn.unah.proyecto.modelos.Cliente;
 import hn.unah.proyecto.modelos.Direccion;
+import hn.unah.proyecto.modelos.Prestamos;
 import hn.unah.proyecto.ModelMapper.ModelMapperSingleton;
 import hn.unah.proyecto.dtos.ClienteDTO;
 import hn.unah.proyecto.dtos.DireccionDTO;
+import hn.unah.proyecto.dtos.PrestamosDTO;
+import hn.unah.proyecto.enums.TipoPrestamoEnum;
 import hn.unah.proyecto.repositorios.ClienteRepositorio;
 
 @Service
 public class ClienteServicio {
     @Autowired
     private ClienteRepositorio clienteRepositorio;
+
+    private List<Cliente> listaClientes = new ArrayList<>();
+    
     
     private ModelMapper modelMapper = ModelMapperSingleton.getInstancia();
     
@@ -44,18 +50,39 @@ public class ClienteServicio {
         if (this.clienteRepositorio.existsById(nvoCliente.getDni())) {
             return "Ya existe el cliente";
         }
-    
-        DireccionDTO direccionDTO = nvoCliente.getDireccion();
-        Direccion direccion = modelMapper.map(direccionDTO, Direccion.class);
+
         Cliente nvoClienteBd = modelMapper.map(nvoCliente, Cliente.class);
-    
-        direccion.setCliente(nvoClienteBd);
-        nvoClienteBd.setDireccion(direccion);
-    
+
+        List<DireccionDTO> direccionDTOs = nvoCliente.getListaDireccion();
+        List<Direccion> listaDirecciones = new ArrayList<>(); 
+
+        for (DireccionDTO d : direccionDTOs) {
+            Direccion direccion = modelMapper.map(d,Direccion.class);
+            direccion.setCliente(nvoClienteBd);
+            listaDirecciones.add(direccion);
+        }
+
+        List<PrestamosDTO> prestamosDTOs = nvoCliente.getListaPrestamos();
+        List<Prestamos> listaPrestamos = new ArrayList<>();
+
+        for (PrestamosDTO p : prestamosDTOs) {
+            Prestamos nvoPrestamo = modelMapper.map(p, Prestamos.class);
+            char tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
+            if (tipo == TipoPrestamoEnum.Hipotecario.getC() ||
+                tipo == TipoPrestamoEnum.Personal.getC() ||
+                tipo == TipoPrestamoEnum.Vehicular.getC()) {
+                listaPrestamos.add(nvoPrestamo);
+            }
+        }
+
+        nvoClienteBd.setListaDireccion(listaDirecciones);
+        nvoClienteBd.setListaPrestamos(listaPrestamos);
+
         clienteRepositorio.save(nvoClienteBd);
-    
+
         return "Cliente creado exitosamente";
-    }
+}
+
     
     
 
@@ -63,6 +90,7 @@ public class ClienteServicio {
         if(!this.clienteRepositorio.existsById(id)){
             return "No existe el cliente";
         }
+        this.listaClientes.remove(clienteRepositorio.findById(id));
         this.clienteRepositorio.deleteById(id);
         return "Cliente eliminado satisfactoriamente";
     }

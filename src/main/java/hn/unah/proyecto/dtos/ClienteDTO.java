@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,7 +26,7 @@ public class ClienteDTO {
 
     private double sueldo;
 
-    private DireccionDTO direccion;
+    private List <DireccionDTO> listaDireccion;
 
     private List<PrestamosDTO> listaPrestamos;
     

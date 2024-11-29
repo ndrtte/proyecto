@@ -1,17 +1,17 @@
 {"properties": [
   {
-    "name": "prestamo_personal",
+    "name": "prestamo.hipotecario",
     "type": "java.lang.String",
-    "description": "Cliente pidio prestamo personal"
+    "description": "A description for 'prestamo.hipotecario'"
   },
   {
-    "name": "prestamo_vechicular",
+    "name": "prestamo.personal",
     "type": "java.lang.String",
-    "description": "Cliente pidio prestamo vechicular'"
+    "description": "A description for 'prestamo.personal'"
   },
   {
-    "name": "prestamo_hipotecario",
+    "name": "prestamo.vehicular",
     "type": "java.lang.String",
-    "description": "Cliente pidio prestamo hipotecario"
+    "description": "A description for 'prestamo.vehicular'"
   }
 ]}

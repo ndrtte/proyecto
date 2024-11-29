@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,8 +37,8 @@ public class Cliente {
 
     private double sueldo;
 
-    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
-    private Direccion direccion;
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List <Direccion> listaDireccion;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name="cliente_prestamos",
