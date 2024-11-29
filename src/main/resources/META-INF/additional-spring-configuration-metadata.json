@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "prestamo_personal",
+    "type": "java.lang.String",
+    "description": "Cliente pidio prestamo personal"
+  },
+  {
+    "name": "prestamo_vechicular",
+    "type": "java.lang.String",
+    "description": "Cliente pidio prestamo vechicular'"
+  },
+  {
+    "name": "prestamo_hipotecario",
+    "type": "java.lang.String",
+    "description": "Cliente pidio prestamo hipotecario"
+  }
+]}
