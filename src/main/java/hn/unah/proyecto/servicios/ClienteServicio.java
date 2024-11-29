@@ -56,10 +56,15 @@ public class ClienteServicio {
         List<DireccionDTO> direccionDTOs = nvoCliente.getListaDireccion();
         List<Direccion> listaDirecciones = new ArrayList<>(); 
 
-        for (DireccionDTO d : direccionDTOs) {
-            Direccion direccion = modelMapper.map(d,Direccion.class);
-            direccion.setCliente(nvoClienteBd);
-            listaDirecciones.add(direccion);
+        if(direccionDTOs.size()<=2){
+            for (DireccionDTO d : direccionDTOs) {
+                Direccion direccion = modelMapper.map(d,Direccion.class);
+                direccion.setCliente(nvoClienteBd);
+                listaDirecciones.add(direccion);
+            } 
+        }
+        else{
+            return "Un cliente no puede tener mas de 2 direcciones";
         }
 
         List<PrestamosDTO> prestamosDTOs = nvoCliente.getListaPrestamos();
