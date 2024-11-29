@@ -15,7 +15,8 @@ import hn.unah.proyecto.ModelMapper.ModelMapperSingleton;
 import hn.unah.proyecto.dtos.ClienteDTO;
 import hn.unah.proyecto.dtos.DireccionDTO;
 import hn.unah.proyecto.dtos.PrestamosDTO;
-import hn.unah.proyecto.enums.TipoPrestamoEnum;
+import hn.unah.proyecto.enums.PrestamoEnum;
+import hn.unah.proyecto.enums.TipoPrestamo;
 import hn.unah.proyecto.repositorios.ClienteRepositorio;
 
 @Service
@@ -73,9 +74,14 @@ public class ClienteServicio {
         for (PrestamosDTO p : prestamosDTOs) {
             Prestamos nvoPrestamo = modelMapper.map(p, Prestamos.class);
             char tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
-            if (tipo == TipoPrestamoEnum.Hipotecario.getC() ||
-                tipo == TipoPrestamoEnum.Personal.getC() ||
-                tipo == TipoPrestamoEnum.Vehicular.getC()) {
+            if (tipo == PrestamoEnum.Hipotecario.getC() ||
+                tipo == PrestamoEnum.Personal.getC() ||
+                tipo == PrestamoEnum.Vehicular.getC()) {
+                
+                double tasaInteres = TipoPrestamo.obtenerTasa(tipo);
+                nvoPrestamo.setTasaInteres(tasaInteres);
+                nvoPrestamo.setEstado('A');
+                
                 listaPrestamos.add(nvoPrestamo);
             }
         }
@@ -86,7 +92,7 @@ public class ClienteServicio {
         clienteRepositorio.save(nvoClienteBd);
 
         return "Cliente creado exitosamente";
-}
+    }
 
     
     

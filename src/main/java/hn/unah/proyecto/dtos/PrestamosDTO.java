@@ -31,5 +31,6 @@ public class PrestamosDTO {
     @JsonIgnore
     private List<ClienteDTO> listaCliente;
 
+    @JsonIgnore
     private List<TablaAmortizacionDTO> listaAmortizacion;
 }
