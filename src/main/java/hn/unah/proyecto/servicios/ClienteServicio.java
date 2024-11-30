@@ -23,8 +23,6 @@ import hn.unah.proyecto.excepciones.ClienteNoEncontradoException;
 import hn.unah.proyecto.repositorios.ClienteRepositorio;
 
 @Service
-@Component
-@Configuration
 public class ClienteServicio {
     @Autowired
     private ClienteRepositorio clienteRepositorio;
