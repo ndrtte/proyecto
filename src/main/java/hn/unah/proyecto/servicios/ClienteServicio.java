@@ -21,16 +21,12 @@ import hn.unah.proyecto.dtos.PrestamosDTO;
 import hn.unah.proyecto.enums.PrestamoEnum;
 import hn.unah.proyecto.excepciones.ClienteNoEncontradoException;
 import hn.unah.proyecto.repositorios.ClienteRepositorio;
-import hn.unah.proyecto.repositorios.TablaAmortizacionRepositorio;
 
 @Service
 
 public class ClienteServicio {
     @Autowired
     private ClienteRepositorio clienteRepositorio;
-
-    @Autowired
-    private TablaAmortizacionRepositorio tablaAmortizacionRepositorio;
 
     @Value("${prestamo.vehicular}")
     private double vehicular;
@@ -102,7 +98,7 @@ public class ClienteServicio {
                 tipo == PrestamoEnum.Personal.getC() ||
                 tipo == PrestamoEnum.Vehicular.getC()) {
                     if(nvoPrestamo.getPlazo() >= 1){
-                        nvoPrestamo.setEstado('A');
+                        nvoPrestamo.setEstado('P');
                         nvoPrestamo.setTipoPrestamo(tipo);
                         
                         switch (tipo) {
@@ -155,7 +151,7 @@ public class ClienteServicio {
     }
 
     private double calcularCuota(Prestamos prestamo) {
-        double r = prestamo.getTasaInteres() / 12 / 100;
+        double r = prestamo.getTasaInteres() / 12;
         int n = prestamo.getPlazo() * 12; 
         double P = prestamo.getMonto(); 
 
