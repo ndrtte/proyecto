@@ -131,17 +131,17 @@ public class ClienteServicio {
                 } else {
                     return "El prestamo con codigo: " + tipo + " no es valido.";
                 }
-
-                double tE = this.calcularTotalEgresos(nvoClienteBd);
-                double nivelEndeudamiento = tE / nvoClienteBd.getSueldo();
-
-                if (nivelEndeudamiento >= 0.4) {
-                    return "El nivel de endeudamiento es mayor al establecido" + "\n" +
-                            "Nivel endeudamiento :" + nivelEndeudamiento +
-                            "Limite maximo: 0.4";
-                }
-
             }
+
+            double tE = this.calcularTotalEgresos(listaPrestamos);
+            double nivelEndeudamiento = tE / nvoClienteBd.getSueldo();
+
+            if (nivelEndeudamiento >= 0.4) {
+                return "El nivel de endeudamiento es mayor al establecido" + "\n" +
+                        "Nivel endeudamiento: " + (int) (nivelEndeudamiento * 100) + "%" +
+                        "\nLimite máximo: 40%";
+            }
+
         }
 
         nvoClienteBd.setListaDireccion(listaDirecciones);
@@ -194,10 +194,10 @@ public class ClienteServicio {
         return "Cliente eliminado satisfactoriamente";
     }
 
-    private double calcularTotalEgresos(Cliente cliente) {
+    private double calcularTotalEgresos(List<Prestamos> listaPrestamos) {
         double totalEgresos = 0;
 
-        for (Prestamos prestamo : cliente.getListaPrestamos()) {
+        for (Prestamos prestamo : listaPrestamos) {
             totalEgresos += prestamo.getCuota();
         }
 
