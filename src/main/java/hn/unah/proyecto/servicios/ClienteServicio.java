@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import hn.unah.proyecto.modelos.Cliente;
@@ -16,16 +19,23 @@ import hn.unah.proyecto.dtos.ClienteDTO;
 import hn.unah.proyecto.dtos.DireccionDTO;
 import hn.unah.proyecto.dtos.PrestamosDTO;
 import hn.unah.proyecto.enums.PrestamoEnum;
-import hn.unah.proyecto.enums.TipoPrestamo;
 import hn.unah.proyecto.repositorios.ClienteRepositorio;
 
 @Service
+@Component
+@Configuration
 public class ClienteServicio {
     @Autowired
     private ClienteRepositorio clienteRepositorio;
 
-    private List<Cliente> listaClientes = new ArrayList<>();
-    
+    @Value("${prestamo.vehicular}")
+    private double vehicular;
+
+    @Value("${prestamo.personal}")
+    private double personal;
+
+    @Value("${prestamo.hipotecario}")
+    private double hipotecario;
     
     private ModelMapper modelMapper = ModelMapperSingleton.getInstancia();
     
@@ -77,8 +87,22 @@ public class ClienteServicio {
             if (tipo == PrestamoEnum.Hipotecario.getC() ||
                 tipo == PrestamoEnum.Personal.getC() ||
                 tipo == PrestamoEnum.Vehicular.getC()) {
-
                 nvoPrestamo.setEstado('A');
+                nvoPrestamo.setTipoPrestamo(tipo);
+
+                switch (p.getTipoPrestamo()) {
+                    case 'V':
+                        nvoPrestamo.setTasaInteres(vehicular);
+                        break;
+                    case 'P':
+                        nvoPrestamo.setTasaInteres(personal);
+                        break;
+                    case 'H':
+                        nvoPrestamo.setTasaInteres(hipotecario);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Tipo de préstamo no válido");
+                }
 
                 listaPrestamos.add(nvoPrestamo);
             }
@@ -99,7 +123,6 @@ public class ClienteServicio {
         if(!this.clienteRepositorio.existsById(id)){
             return "No existe el cliente";
         }
-        this.listaClientes.remove(clienteRepositorio.findById(id));
         this.clienteRepositorio.deleteById(id);
         return "Cliente eliminado satisfactoriamente";
     }

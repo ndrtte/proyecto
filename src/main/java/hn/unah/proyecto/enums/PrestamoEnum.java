@@ -1,5 +1,6 @@
 package hn.unah.proyecto.enums;
 
+
 import lombok.Getter;
 
 @Getter
@@ -13,4 +14,6 @@ public enum PrestamoEnum {
     private PrestamoEnum(char c) {
         this.c = c;
     }
+
+
 }
