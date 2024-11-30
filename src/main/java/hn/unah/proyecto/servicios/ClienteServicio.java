@@ -87,6 +87,7 @@ public class ClienteServicio {
             if (tipo == PrestamoEnum.Hipotecario.getC() ||
                 tipo == PrestamoEnum.Personal.getC() ||
                 tipo == PrestamoEnum.Vehicular.getC()) {
+
                 nvoPrestamo.setEstado('A');
                 nvoPrestamo.setTipoPrestamo(tipo);
 
@@ -100,11 +101,12 @@ public class ClienteServicio {
                     case 'H':
                         nvoPrestamo.setTasaInteres(hipotecario);
                         break;
-                    default:
-                        throw new IllegalArgumentException("Tipo de préstamo no válido");
                 }
 
                 listaPrestamos.add(nvoPrestamo);
+            }
+            else {
+                return "El prestamo con codigo: "+tipo+" no es valido.";
             }
         }
 
