@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hn.unah.proyecto.dtos.ClienteDTO;
+import hn.unah.proyecto.excepciones.ClienteNoEncontradoException;
 import hn.unah.proyecto.servicios.ClienteServicio;
 
 
@@ -26,7 +27,7 @@ public class ClienteControlador {
     private ClienteServicio clienteServicio;
 
     @GetMapping("/obtener/dni")
-    public Optional<ClienteDTO> obtenerPorId(@RequestParam(name="dni") String dni) {
+    public Optional<ClienteDTO> obtenerPorId(@RequestParam(name="dni") String dni) throws ClienteNoEncontradoException {
         return this.clienteServicio.obtenerPorDni(dni);
     }
 

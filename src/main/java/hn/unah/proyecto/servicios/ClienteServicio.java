@@ -19,6 +19,7 @@ import hn.unah.proyecto.dtos.ClienteDTO;
 import hn.unah.proyecto.dtos.DireccionDTO;
 import hn.unah.proyecto.dtos.PrestamosDTO;
 import hn.unah.proyecto.enums.PrestamoEnum;
+import hn.unah.proyecto.excepciones.ClienteNoEncontradoException;
 import hn.unah.proyecto.repositorios.ClienteRepositorio;
 
 @Service
@@ -50,11 +51,18 @@ public class ClienteServicio {
         return listaClienteDTO;
     }
 
-    public Optional<ClienteDTO> obtenerPorDni(String dni){
+    public Optional<ClienteDTO> obtenerPorDni(String dni) throws ClienteNoEncontradoException {
         Optional<Cliente> cliente = clienteRepositorio.findById(dni);
-        ClienteDTO clienteDto =  this.modelMapper.map(cliente, ClienteDTO.class);
+    
+        if (cliente.isEmpty()) {
+            throw new ClienteNoEncontradoException("Cliente con el DNI " + dni + " no encontrado.");
+        }
+
+        ClienteDTO clienteDto = this.modelMapper.map(cliente.get(), ClienteDTO.class);
+        
         return Optional.ofNullable(clienteDto);
     }
+    
 
 
     public String crearCliente(ClienteDTO nvoCliente) {
@@ -91,7 +99,7 @@ public class ClienteServicio {
                 nvoPrestamo.setEstado('A');
                 nvoPrestamo.setTipoPrestamo(tipo);
 
-                switch (p.getTipoPrestamo()) {
+                switch (tipo) {
                     case 'V':
                         nvoPrestamo.setTasaInteres(vehicular);
                         break;
@@ -102,6 +110,8 @@ public class ClienteServicio {
                         nvoPrestamo.setTasaInteres(hipotecario);
                         break;
                 }
+
+                
 
                 listaPrestamos.add(nvoPrestamo);
             }
