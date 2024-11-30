@@ -36,10 +36,10 @@ public class ClienteServicio {
 
     @Value("${prestamo.hipotecario}")
     private double hipotecario;
-    
+
     private ModelMapper modelMapper = ModelMapperSingleton.getInstancia();
-    
-    public List<ClienteDTO> obtenerTodos(){
+
+    public List<ClienteDTO> obtenerTodos() {
         List<Cliente> listaCliente = clienteRepositorio.findAll();
         List<ClienteDTO> listaClienteDTO = new ArrayList<>();
         ClienteDTO clienteDTO;
@@ -52,17 +52,15 @@ public class ClienteServicio {
 
     public Optional<ClienteDTO> obtenerPorDni(String dni) throws ClienteNoEncontradoException {
         Optional<Cliente> cliente = clienteRepositorio.findById(dni);
-    
+
         if (cliente.isEmpty()) {
             throw new ClienteNoEncontradoException("Cliente con el DNI " + dni + " no encontrado.");
         }
 
         ClienteDTO clienteDto = this.modelMapper.map(cliente.get(), ClienteDTO.class);
-        
+
         return Optional.ofNullable(clienteDto);
     }
-    
-
 
     public String crearCliente(ClienteDTO nvoCliente) {
         if (this.clienteRepositorio.existsById(nvoCliente.getDni())) {
@@ -72,28 +70,26 @@ public class ClienteServicio {
         Cliente nvoClienteBd = modelMapper.map(nvoCliente, Cliente.class);
 
         List<DireccionDTO> direccionDTOs = nvoCliente.getListaDireccion();
-        List<Direccion> listaDirecciones = new ArrayList<>(); 
-        
-        if(direccionDTOs == null){
+        List<Direccion> listaDirecciones = new ArrayList<>();
+
+        if (direccionDTOs == null) {
             return "Digite al menos 1 direccion";
         }
 
-        if(direccionDTOs.size()<=2){
+        if (direccionDTOs.size() <= 2) {
             for (DireccionDTO d : direccionDTOs) {
-                Direccion direccion = modelMapper.map(d,Direccion.class);
+                Direccion direccion = modelMapper.map(d, Direccion.class);
                 direccion.setCliente(nvoClienteBd);
                 listaDirecciones.add(direccion);
-            } 
-        }
-        else{
+            }
+        } else {
             return "Un cliente no puede tener mas de 2 direcciones";
         }
 
         List<Prestamos> listaPrestamos = new ArrayList<>();
-        if(nvoCliente.getListaPrestamos() == null){
+        if (nvoCliente.getListaPrestamos() == null) {
             listaPrestamos.add(null);
-        }
-        else{
+        } else {
 
             List<PrestamosDTO> prestamosDTOs = nvoCliente.getListaPrestamos();
             List<TablaAmortizacion> listaAmortizacion = new ArrayList<>();
@@ -104,12 +100,12 @@ public class ClienteServicio {
                 nvoPrestamo = modelMapper.map(p, Prestamos.class);
                 tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
                 if (tipo == PrestamoEnum.Hipotecario.getC() ||
-                    tipo == PrestamoEnum.Personal.getC() ||
-                    tipo == PrestamoEnum.Vehicular.getC()) {
-                        if(nvoPrestamo.getPlazo() >= 1){
-                            nvoPrestamo.setEstado('P');
-                            nvoPrestamo.setTipoPrestamo(tipo);
-                        
+                        tipo == PrestamoEnum.Personal.getC() ||
+                        tipo == PrestamoEnum.Vehicular.getC()) {
+                    if (nvoPrestamo.getPlazo() >= 1) {
+                        nvoPrestamo.setEstado('P');
+                        nvoPrestamo.setTipoPrestamo(tipo);
+
                         switch (tipo) {
                             case 'V':
                                 nvoPrestamo.setTasaInteres(vehicular);
@@ -129,29 +125,24 @@ public class ClienteServicio {
                         nvoPrestamo.setListaAmortizacion(listaAmortizacion);
 
                         listaPrestamos.add(nvoPrestamo);
-                        }
-                    else{
+                    } else {
                         return "El plazo mínimo para un préstamo es de 1 año";
                     }
+                } else {
+                    return "El prestamo con codigo: " + tipo + " no es valido.";
                 }
-            else {
-                return "El prestamo con codigo: "+tipo+" no es valido.";
-            }
-            
 
+                double tE = this.calcularTotalEgresos(nvoClienteBd);
+                double nivelEndeudamiento = tE / nvoClienteBd.getSueldo();
 
-            double tE = this.calcularTotalEgresos(nvoClienteBd);
-            double nivelEndeudamiento = tE/nvoClienteBd.getSueldo();
-
-            if(nivelEndeudamiento >= 0.4){
-                return "El nivel de endeudamiento es mayor al establecido"+"\n"+
-                "Nivel endeudamiento :"+nivelEndeudamiento+
-                "Limite maximo: 0.4";
-            }
+                if (nivelEndeudamiento >= 0.4) {
+                    return "El nivel de endeudamiento es mayor al establecido" + "\n" +
+                            "Nivel endeudamiento :" + nivelEndeudamiento +
+                            "Limite maximo: 0.4";
+                }
 
             }
         }
-        
 
         nvoClienteBd.setListaDireccion(listaDirecciones);
         nvoClienteBd.setListaPrestamos(listaPrestamos);
@@ -163,8 +154,8 @@ public class ClienteServicio {
 
     private double calcularCuota(Prestamos prestamo) {
         double r = prestamo.getTasaInteres() / 12;
-        int n = prestamo.getPlazo() * 12; 
-        double P = prestamo.getMonto(); 
+        int n = prestamo.getPlazo() * 12;
+        double P = prestamo.getMonto();
 
         return (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     }
@@ -172,7 +163,7 @@ public class ClienteServicio {
     private List<TablaAmortizacion> insertarCuotasEnTablaAmortizacion(Prestamos prestamo) {
         List<TablaAmortizacion> tablaAmortizaciones = new ArrayList<>();
         double saldoPendiente = prestamo.getMonto();
-        double r = prestamo.getTasaInteres() / 12 ;
+        double r = prestamo.getTasaInteres() / 12;
         int n = prestamo.getPlazo() * 12;
 
         for (int i = 1; i <= n; i++) {
@@ -187,16 +178,16 @@ public class ClienteServicio {
             cuota.setCapital(capital);
             cuota.setSaldo(saldoPendiente);
             cuota.setFechaVencimiento(LocalDate.now().plusMonths(i));
-            cuota.setEstado('P'); 
+            cuota.setEstado('P');
 
             cuota.setPrestamo(prestamo);
             tablaAmortizaciones.add(cuota);
         }
-       return tablaAmortizaciones;
+        return tablaAmortizaciones;
     }
-    
-    public String eliminarClientePorId(String id){
-        if(!this.clienteRepositorio.existsById(id)){
+
+    public String eliminarClientePorId(String id) {
+        if (!this.clienteRepositorio.existsById(id)) {
             return "No existe el cliente";
         }
         this.clienteRepositorio.deleteById(id);
@@ -213,5 +204,4 @@ public class ClienteServicio {
         return totalEgresos;
     }
 
-    
 }
