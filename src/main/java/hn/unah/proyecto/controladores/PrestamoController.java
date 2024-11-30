@@ -15,7 +15,7 @@ public class PrestamoController {
     @Autowired
     private PrestamoServicio prestamoServicio;
 
-    @PostMapping
+    @PostMapping("/crear/nuevo")
     public String crearPrestamo(@RequestBody PrestamosDTO prestamo) {
         return prestamoServicio.crearPrestamo(prestamo);
     }
