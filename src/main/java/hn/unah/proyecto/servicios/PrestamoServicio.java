@@ -87,6 +87,7 @@ public class PrestamoServicio {
 
         double cuota = calcularCuota(prestamo);
         prestamo.setCuota(cuota);
+        prestamo.setEstado('P');
 
         prestamo.getListaCliente().add(cliente);
         cliente.getListaPrestamos().add(prestamo);
@@ -117,9 +118,10 @@ public class PrestamoServicio {
         return totalEgresos;
     }
 
-    private void insertarCuotasEnTablaAmortizacion(Prestamos prestamo) {
+    private List<TablaAmortizacion> insertarCuotasEnTablaAmortizacion(Prestamos prestamo) {
+        List<TablaAmortizacion> tablaAmortizaciones = new ArrayList<>();
         double saldoPendiente = prestamo.getMonto();
-        double r = prestamo.getTasaInteres() / 12 / 100;
+        double r = prestamo.getTasaInteres() / 12;
         int n = prestamo.getPlazo() * 12;
 
         for (int i = 1; i <= n; i++) {
@@ -134,14 +136,15 @@ public class PrestamoServicio {
             cuota.setCapital(capital);
             cuota.setSaldo(saldoPendiente);
             cuota.setFechaVencimiento(LocalDate.now().plusMonths(i));
-            cuota.setEstado('P'); 
+            cuota.setEstado('P');
 
             cuota.setPrestamo(prestamo);
-            prestamo.getListaAmortizacion().add(cuota);
+            tablaAmortizaciones.add(cuota);
         }
-
-        prestamosRepositorio.save(prestamo);
+        return tablaAmortizaciones;
     }
+
+
     public String pagarCuota(int idPrestamo) {
         Optional<Prestamos> prestamoOpt = prestamosRepositorio.findById(idPrestamo);
     
