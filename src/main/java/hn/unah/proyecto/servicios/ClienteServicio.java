@@ -95,29 +95,50 @@ public class ClienteServicio {
             if (tipo == PrestamoEnum.Hipotecario.getC() ||
                 tipo == PrestamoEnum.Personal.getC() ||
                 tipo == PrestamoEnum.Vehicular.getC()) {
+                    if(nvoPrestamo.getPlazo() >= 12){
+                        nvoPrestamo.setEstado('A');
+                        nvoPrestamo.setTipoPrestamo(tipo);
+                        
+                        switch (tipo) {
+                            case 'V':
+                                nvoPrestamo.setTasaInteres(vehicular);
+                                break;
+                            case 'P':
+                                nvoPrestamo.setTasaInteres(personal);
+                                break;
+                            case 'H':
+                                nvoPrestamo.setTasaInteres(hipotecario);
+                                break;
+                        }
 
-                nvoPrestamo.setEstado('A');
-                nvoPrestamo.setTipoPrestamo(tipo);
+                        double monto = nvoPrestamo.getMonto();
+                        double r = nvoPrestamo.getTasaInteres()/12;
+                        double plazo = nvoPrestamo.getPlazo()/12;
+                        int n = (int) (plazo*12);
+            
+                        double cuota = (monto*r*Math.pow(1+r, n))/(Math.pow(1+r, n)-1);
+                        nvoPrestamo.setCuota(cuota);
 
-                switch (tipo) {
-                    case 'V':
-                        nvoPrestamo.setTasaInteres(vehicular);
-                        break;
-                    case 'P':
-                        nvoPrestamo.setTasaInteres(personal);
-                        break;
-                    case 'H':
-                        nvoPrestamo.setTasaInteres(hipotecario);
-                        break;
-                }
-
-                
-
-                listaPrestamos.add(nvoPrestamo);
+                        listaPrestamos.add(nvoPrestamo);
+                    }
+                    else{
+                        return "La cantidad de prestamos digitada supera su nivel de endeudamiento.";
+                    }
             }
             else {
                 return "El prestamo con codigo: "+tipo+" no es valido.";
             }
+            double tE = 0;
+            for (Prestamos prestamos : listaPrestamos) {
+                tE+=prestamos.getCuota();
+            }
+            double nivelEndeudamiento = tE/nvoClienteBd.getSueldo();
+            if(nivelEndeudamiento >= 0.4){
+                return "El nivel de endeudamiento es mayor al establecido"+"\n"+
+                "Nivel endeudamiento :"+nivelEndeudamiento+
+                "Limite maximo: 0.4";
+            }
+
         }
 
         nvoClienteBd.setListaDireccion(listaDirecciones);
