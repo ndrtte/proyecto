@@ -12,25 +12,26 @@ import java.util.Map;
 @Getter
 public class TipoPrestamo {
 
-    private static final Map<Character, Double> tasas = new HashMap<>();
+    private final Map<Character, Double> tasas = new HashMap<>();
 
     @Value("${prestamo.vehicular}")
-    private static double vehicular;
+    private double vehicular;
 
     @Value("${prestamo.personal}")
-    private static double personal;
+    private double personal;
 
     @Value("${prestamo.hipotecario}")
-    private static double hipotecario;
+    private double hipotecario;
 
-    public static void valorTasas() {
+    public void inicializarTasas() {
         tasas.put(PrestamoEnum.Vehicular.getC(), vehicular);
         tasas.put(PrestamoEnum.Personal.getC(), personal);
         tasas.put(PrestamoEnum.Hipotecario.getC(), hipotecario);
     }
 
-    public static double obtenerTasa(char tipo) {
+    public double obtenerTasa(char tipo) {
         return tasas.get(tipo);
     }
 }
+
 

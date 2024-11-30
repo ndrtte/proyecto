@@ -77,11 +77,9 @@ public class ClienteServicio {
             if (tipo == PrestamoEnum.Hipotecario.getC() ||
                 tipo == PrestamoEnum.Personal.getC() ||
                 tipo == PrestamoEnum.Vehicular.getC()) {
-                
-                double tasaInteres = TipoPrestamo.obtenerTasa(tipo);
-                nvoPrestamo.setTasaInteres(tasaInteres);
+
                 nvoPrestamo.setEstado('A');
-                
+
                 listaPrestamos.add(nvoPrestamo);
             }
         }
