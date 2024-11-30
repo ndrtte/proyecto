@@ -85,12 +85,10 @@ public class PrestamoServicio {
                 return "Tipo de préstamo inválido";
         }
 
-        List<TablaAmortizacion> listaAmortizacion = insertarCuotasEnTablaAmortizacion(prestamo);
-
-
         double cuota = calcularCuota(prestamo);
         prestamo.setCuota(cuota);
         prestamo.setEstado('P');
+        List<TablaAmortizacion> listaAmortizacion = insertarCuotasEnTablaAmortizacion(prestamo);
         prestamo.setListaAmortizacion(listaAmortizacion);
 
         prestamo.getListaCliente().add(cliente);
