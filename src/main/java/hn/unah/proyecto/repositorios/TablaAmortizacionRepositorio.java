@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import hn.unah.proyecto.modelos.TablaAmortizacion;
 
-public interface TablaAmortizacionRepository extends JpaRepository<TablaAmortizacion,Integer> {
+public interface TablaAmortizacionRepositorio extends JpaRepository<TablaAmortizacion,Integer> {
     
 }

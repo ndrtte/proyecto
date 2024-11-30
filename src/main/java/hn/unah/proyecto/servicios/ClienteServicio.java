@@ -21,7 +21,7 @@ import hn.unah.proyecto.dtos.PrestamosDTO;
 import hn.unah.proyecto.enums.PrestamoEnum;
 import hn.unah.proyecto.excepciones.ClienteNoEncontradoException;
 import hn.unah.proyecto.repositorios.ClienteRepositorio;
-import hn.unah.proyecto.repositorios.PrestamosRepositorio;
+import hn.unah.proyecto.repositorios.TablaAmortizacionRepositorio;
 
 @Service
 
@@ -30,7 +30,7 @@ public class ClienteServicio {
     private ClienteRepositorio clienteRepositorio;
 
     @Autowired
-    private PrestamosRepositorio prestamosRepositorio;
+    private TablaAmortizacionRepositorio tablaAmortizacionRepositorio;
 
     @Value("${prestamo.vehicular}")
     private double vehicular;
@@ -91,10 +91,13 @@ public class ClienteServicio {
 
         List<PrestamosDTO> prestamosDTOs = nvoCliente.getListaPrestamos();
         List<Prestamos> listaPrestamos = new ArrayList<>();
+        List<TablaAmortizacion> listaAmortizacion = new ArrayList<>();
 
         for (PrestamosDTO p : prestamosDTOs) {
             Prestamos nvoPrestamo = modelMapper.map(p, Prestamos.class);
             char tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
+            nvoPrestamo = modelMapper.map(p, Prestamos.class);
+            tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
             if (tipo == PrestamoEnum.Hipotecario.getC() ||
                 tipo == PrestamoEnum.Personal.getC() ||
                 tipo == PrestamoEnum.Vehicular.getC()) {
@@ -117,8 +120,10 @@ public class ClienteServicio {
                         double cuota = this.calcularCuota(nvoPrestamo);
                         nvoPrestamo.setCuota(cuota);
 
+                        listaAmortizacion = insertarCuotasEnTablaAmortizacion(nvoPrestamo);
+                        nvoPrestamo.setListaAmortizacion(listaAmortizacion);
+
                         listaPrestamos.add(nvoPrestamo);
-                        insertarCuotasEnTablaAmortizacion(nvoPrestamo);
                     }
                     else{
                         return "El plazo mínimo para un préstamo es de 1 año";
@@ -128,6 +133,8 @@ public class ClienteServicio {
                 return "El prestamo con codigo: "+tipo+" no es valido.";
             }
             
+
+
             double tE = this.calcularTotalEgresos(nvoClienteBd);
             double nivelEndeudamiento = tE/nvoClienteBd.getSueldo();
 
@@ -155,9 +162,10 @@ public class ClienteServicio {
         return (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     }
 
-    private void insertarCuotasEnTablaAmortizacion(Prestamos prestamo) {
+    private List<TablaAmortizacion> insertarCuotasEnTablaAmortizacion(Prestamos prestamo) {
+        List<TablaAmortizacion> tablaAmortizaciones = new ArrayList<>();
         double saldoPendiente = prestamo.getMonto();
-        double r = prestamo.getTasaInteres() / 12 / 100;
+        double r = prestamo.getTasaInteres() / 12 ;
         int n = prestamo.getPlazo() * 12;
 
         for (int i = 1; i <= n; i++) {
@@ -175,10 +183,9 @@ public class ClienteServicio {
             cuota.setEstado('P'); 
 
             cuota.setPrestamo(prestamo);
-            prestamo.getListaAmortizacion().add(cuota);
+            tablaAmortizaciones.add(cuota);
         }
-
-        prestamosRepositorio.save(prestamo);
+       return tablaAmortizaciones;
     }
     
     public String eliminarClientePorId(String id){

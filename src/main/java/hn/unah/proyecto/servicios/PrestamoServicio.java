@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import hn.unah.proyecto.ModelMapper.ModelMapperSingleton;
 import hn.unah.proyecto.dtos.PrestamosDTO;
+import hn.unah.proyecto.enums.PrestamoEnum;
 import hn.unah.proyecto.modelos.Cliente;
 import hn.unah.proyecto.modelos.Prestamos;
 import hn.unah.proyecto.modelos.TablaAmortizacion;
@@ -48,6 +49,13 @@ public class PrestamoServicio {
         }
 
         Cliente cliente = clienteOpt.get();
+        char tipo = prestamoDTO.getTipoPrestamo();
+
+        if(!(tipo == PrestamoEnum.Hipotecario.getC() ||
+            tipo == PrestamoEnum.Personal.getC() ||
+            tipo == PrestamoEnum.Vehicular.getC())){
+                return "El prestamo con codigo: "+tipo+" no es valido.";
+        }
 
         if (prestamoDTO.getPlazo() < 1) {
             return "El plazo mínimo para un préstamo es de 1 año";
