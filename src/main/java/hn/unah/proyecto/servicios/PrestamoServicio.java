@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import hn.unah.proyecto.ModelMapper.ModelMapperSingleton;
 import hn.unah.proyecto.dtos.PrestamosDTO;
 import hn.unah.proyecto.modelos.Cliente;
 import hn.unah.proyecto.modelos.Prestamos;
@@ -28,8 +29,7 @@ public class PrestamoServicio {
     @Autowired
     private ClienteRepositorio clienteRepositorio;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private ModelMapper modelMapper = ModelMapperSingleton.getInstancia();
 
     @Value("${prestamo.personal}")
     private double tasaPersonal;
