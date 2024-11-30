@@ -28,7 +28,6 @@ public class PrestamosDTO {
 
     private char tipoPrestamo;
 
-    @JsonIgnore
     private List<ClienteDTO> listaCliente;
 
     @JsonIgnore
