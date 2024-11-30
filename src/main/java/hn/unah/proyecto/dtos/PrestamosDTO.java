@@ -2,7 +2,6 @@ package hn.unah.proyecto.dtos;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -29,7 +28,6 @@ public class PrestamosDTO {
 
     private char tipoPrestamo;
 
-    @JsonBackReference
     private List<ClienteDTO> listaCliente;
 
     @JsonIgnore

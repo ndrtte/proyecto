@@ -3,8 +3,6 @@ package hn.unah.proyecto.dtos;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +29,6 @@ public class ClienteDTO {
     
     private List <DireccionDTO> listaDireccion;
 
-    @JsonManagedReference
     private List<PrestamosDTO> listaPrestamos;
     
 }
