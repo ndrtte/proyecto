@@ -92,7 +92,7 @@ public class PrestamoServicio {
     }
 
     private double calcularCuota(Prestamos prestamo) {
-        double r = prestamo.getTasaInteres() / 12 / 100;
+        double r = prestamo.getTasaInteres() / 12;
         int n = prestamo.getPlazo() * 12; 
         double P = prestamo.getMonto(); 
 
