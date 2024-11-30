@@ -73,6 +73,10 @@ public class ClienteServicio {
 
         List<DireccionDTO> direccionDTOs = nvoCliente.getListaDireccion();
         List<Direccion> listaDirecciones = new ArrayList<>(); 
+        
+        if(direccionDTOs == null){
+            return "Digite al menos 1 direccion";
+        }
 
         if(direccionDTOs.size()<=2){
             for (DireccionDTO d : direccionDTOs) {
@@ -85,21 +89,26 @@ public class ClienteServicio {
             return "Un cliente no puede tener mas de 2 direcciones";
         }
 
-        List<PrestamosDTO> prestamosDTOs = nvoCliente.getListaPrestamos();
         List<Prestamos> listaPrestamos = new ArrayList<>();
-        List<TablaAmortizacion> listaAmortizacion = new ArrayList<>();
+        if(nvoCliente.getListaPrestamos() == null){
+            listaPrestamos.add(null);
+        }
+        else{
 
-        for (PrestamosDTO p : prestamosDTOs) {
-            Prestamos nvoPrestamo = modelMapper.map(p, Prestamos.class);
-            char tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
-            nvoPrestamo = modelMapper.map(p, Prestamos.class);
-            tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
-            if (tipo == PrestamoEnum.Hipotecario.getC() ||
-                tipo == PrestamoEnum.Personal.getC() ||
-                tipo == PrestamoEnum.Vehicular.getC()) {
-                    if(nvoPrestamo.getPlazo() >= 1){
-                        nvoPrestamo.setEstado('P');
-                        nvoPrestamo.setTipoPrestamo(tipo);
+            List<PrestamosDTO> prestamosDTOs = nvoCliente.getListaPrestamos();
+            List<TablaAmortizacion> listaAmortizacion = new ArrayList<>();
+
+            for (PrestamosDTO p : prestamosDTOs) {
+                Prestamos nvoPrestamo = modelMapper.map(p, Prestamos.class);
+                char tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
+                nvoPrestamo = modelMapper.map(p, Prestamos.class);
+                tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
+                if (tipo == PrestamoEnum.Hipotecario.getC() ||
+                    tipo == PrestamoEnum.Personal.getC() ||
+                    tipo == PrestamoEnum.Vehicular.getC()) {
+                        if(nvoPrestamo.getPlazo() >= 1){
+                            nvoPrestamo.setEstado('P');
+                            nvoPrestamo.setTipoPrestamo(tipo);
                         
                         switch (tipo) {
                             case 'V':
@@ -120,11 +129,11 @@ public class ClienteServicio {
                         nvoPrestamo.setListaAmortizacion(listaAmortizacion);
 
                         listaPrestamos.add(nvoPrestamo);
-                    }
+                        }
                     else{
                         return "El plazo mínimo para un préstamo es de 1 año";
                     }
-            }
+                }
             else {
                 return "El prestamo con codigo: "+tipo+" no es valido.";
             }
@@ -140,7 +149,9 @@ public class ClienteServicio {
                 "Limite maximo: 0.4";
             }
 
+            }
         }
+        
 
         nvoClienteBd.setListaDireccion(listaDirecciones);
         nvoClienteBd.setListaPrestamos(listaPrestamos);
