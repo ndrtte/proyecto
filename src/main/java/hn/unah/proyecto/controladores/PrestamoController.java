@@ -2,6 +2,8 @@ package hn.unah.proyecto.controladores;
 
 import hn.unah.proyecto.dtos.Prestamos2DTO;
 import hn.unah.proyecto.dtos.PrestamosDTO;
+import hn.unah.proyecto.excepciones.ClienteNoEncontradoException;
+import hn.unah.proyecto.excepciones.PrestamoNoEncontradoException;
 import hn.unah.proyecto.servicios.PrestamoServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +24,12 @@ public class PrestamoController {
     }
 
     @GetMapping("/dni/{dni}")
-    public List<Prestamos2DTO> buscarPrestamosPorDni(@PathVariable String dni) {
+    public List<Prestamos2DTO> buscarPrestamosPorDni(@PathVariable String dni) throws ClienteNoEncontradoException {
         return prestamoServicio.buscarPrestamosPorDni(dni);
     }
 
     @GetMapping("/{id}")
-    public Optional<PrestamosDTO> buscarPrestamoPorId(@PathVariable int id) {
+    public Optional<PrestamosDTO> buscarPrestamoPorId(@PathVariable int id) throws PrestamoNoEncontradoException {
         return prestamoServicio.buscarPrestamoPorId(id);
     }
 

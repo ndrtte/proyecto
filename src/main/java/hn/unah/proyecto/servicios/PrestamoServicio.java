@@ -2,7 +2,6 @@ package hn.unah.proyecto.servicios;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +15,8 @@ import hn.unah.proyecto.ModelMapper.ModelMapperSingleton;
 import hn.unah.proyecto.dtos.Prestamos2DTO;
 import hn.unah.proyecto.dtos.PrestamosDTO;
 import hn.unah.proyecto.enums.PrestamoEnum;
+import hn.unah.proyecto.excepciones.ClienteNoEncontradoException;
+import hn.unah.proyecto.excepciones.PrestamoNoEncontradoException;
 import hn.unah.proyecto.modelos.Cliente;
 import hn.unah.proyecto.modelos.Prestamos;
 import hn.unah.proyecto.modelos.TablaAmortizacion;
@@ -216,11 +217,11 @@ public class PrestamoServicio {
         return "Préstamo asociado correctamente";
     }
 
-    public List<Prestamos2DTO> buscarPrestamosPorDni(String dni) {
+    public List<Prestamos2DTO> buscarPrestamosPorDni(String dni) throws ClienteNoEncontradoException {
     Optional<Cliente> clienteOpt = clienteRepositorio.findById(dni);
     
     if (!clienteOpt.isPresent()) {
-        return Collections.emptyList();
+        throw new ClienteNoEncontradoException("Cliente con el DNI " + dni + " no encontrado.");
     }
     
     Cliente cliente = clienteOpt.get();
@@ -234,13 +235,13 @@ public class PrestamoServicio {
     return prestamosDTO;
     }
     
-    public Optional<PrestamosDTO> buscarPrestamoPorId(int id) {
+    public Optional<PrestamosDTO> buscarPrestamoPorId(int id) throws PrestamoNoEncontradoException {
         Optional<Prestamos> prestamoOpt = prestamosRepositorio.findById(id);
         
         if (prestamoOpt.isPresent()) {
             return Optional.of(modelMapper.map(prestamoOpt.get(), PrestamosDTO.class));
         }
         
-        return Optional.empty();  // No se encontró el préstamo
+        throw new PrestamoNoEncontradoException("Prestamo con el ID " + id + " no encontrado.");
     }
 }
