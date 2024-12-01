@@ -17,7 +17,7 @@ import hn.unah.proyecto.modelos.TablaAmortizacion;
 import hn.unah.proyecto.ModelMapper.ModelMapperSingleton;
 import hn.unah.proyecto.dtos.ClienteDTO;
 import hn.unah.proyecto.dtos.DireccionDTO;
-import hn.unah.proyecto.dtos.PrestamosDTO;
+import hn.unah.proyecto.dtos.Prestamos2DTO;
 import hn.unah.proyecto.enums.PrestamoEnum;
 import hn.unah.proyecto.excepciones.ClienteNoEncontradoException;
 import hn.unah.proyecto.repositorios.ClienteRepositorio;
@@ -91,10 +91,10 @@ public class ClienteServicio {
             listaPrestamos.add(null);
         } else {
 
-            List<PrestamosDTO> prestamosDTOs = nvoCliente.getListaPrestamos();
+            List<Prestamos2DTO> prestamosDTOs = nvoCliente.getListaPrestamos();
             List<TablaAmortizacion> listaAmortizacion = new ArrayList<>();
 
-            for (PrestamosDTO p : prestamosDTOs) {
+            for (Prestamos2DTO p : prestamosDTOs) {
                 Prestamos nvoPrestamo = modelMapper.map(p, Prestamos.class);
                 char tipo = Character.toUpperCase(nvoPrestamo.getTipoPrestamo());
                 nvoPrestamo = modelMapper.map(p, Prestamos.class);

@@ -26,9 +26,8 @@ public class ClienteDTO {
 
     private double sueldo;
 
-    
     private List <DireccionDTO> listaDireccion;
 
-    private List<PrestamosDTO> listaPrestamos;
+    private List<Prestamos2DTO> listaPrestamos;
     
 }
