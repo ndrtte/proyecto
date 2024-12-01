@@ -1,6 +1,5 @@
 package hn.unah.proyecto.dtos;
 
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

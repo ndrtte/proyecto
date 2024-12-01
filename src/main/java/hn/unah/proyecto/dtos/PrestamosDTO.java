@@ -28,7 +28,7 @@ public class PrestamosDTO {
 
     private char tipoPrestamo;
 
-    private List<ClienteDTO> listaCliente;
+    private List<Cliente2DTO> listaCliente;
 
     @JsonIgnore
     private List<TablaAmortizacionDTO> listaAmortizacion;
