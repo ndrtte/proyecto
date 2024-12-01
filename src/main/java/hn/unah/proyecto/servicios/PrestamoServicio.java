@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import hn.unah.proyecto.ModelMapper.ModelMapperSingleton;
+import hn.unah.proyecto.dtos.Prestamos2DTO;
 import hn.unah.proyecto.dtos.PrestamosDTO;
 import hn.unah.proyecto.enums.PrestamoEnum;
 import hn.unah.proyecto.modelos.Cliente;
@@ -215,7 +216,7 @@ public class PrestamoServicio {
         return "Préstamo asociado correctamente";
     }
 
-    public List<PrestamosDTO> buscarPrestamosPorDni(String dni) {
+    public List<Prestamos2DTO> buscarPrestamosPorDni(String dni) {
     Optional<Cliente> clienteOpt = clienteRepositorio.findById(dni);
     
     if (!clienteOpt.isPresent()) {
@@ -224,10 +225,10 @@ public class PrestamoServicio {
     
     Cliente cliente = clienteOpt.get();
     List<Prestamos> prestamos = cliente.getListaPrestamos();
-    List<PrestamosDTO> prestamosDTO = new ArrayList<>();
+    List<Prestamos2DTO> prestamosDTO = new ArrayList<>();
 
     for (Prestamos prestamo : prestamos) {
-        prestamosDTO.add(modelMapper.map(prestamo, PrestamosDTO.class));
+        prestamosDTO.add(modelMapper.map(prestamo, Prestamos2DTO.class));
     }
 
     return prestamosDTO;

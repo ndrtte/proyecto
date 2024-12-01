@@ -1,5 +1,6 @@
 package hn.unah.proyecto.controladores;
 
+import hn.unah.proyecto.dtos.Prestamos2DTO;
 import hn.unah.proyecto.dtos.PrestamosDTO;
 import hn.unah.proyecto.servicios.PrestamoServicio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class PrestamoController {
     }
 
     @GetMapping("/dni/{dni}")
-    public List<PrestamosDTO> buscarPrestamosPorDni(@PathVariable String dni) {
+    public List<Prestamos2DTO> buscarPrestamosPorDni(@PathVariable String dni) {
         return prestamoServicio.buscarPrestamosPorDni(dni);
     }
 
